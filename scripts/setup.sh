@@ -4,6 +4,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+# Docker registry for base images (e.g. "registry.corp.com/dockerhub-proxy/").
+# Must include trailing slash. Defaults to Docker Hub (empty) if not set.
+DOCKER_REGISTRY="${DOCKER_REGISTRY:-}"
+
 echo "Starting minikube..."
 if minikube status --format='{{.Host}}' 2>/dev/null | grep -q "Running"; then
     echo "minikube is already running."
@@ -38,8 +42,8 @@ eval $(minikube docker-env)
 
 cd "$PROJECT_DIR"
 mvn clean package -DskipTests -q
-docker build -t istio-jwt-backend:latest .
-docker build -t jwks-server:latest "$PROJECT_DIR/jwks-server/"
+docker build --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" -t istio-jwt-backend:latest .
+docker build --build-arg DOCKER_REGISTRY="$DOCKER_REGISTRY" -t jwks-server:latest "$PROJECT_DIR/jwks-server/"
 
 echo "Deploying to Kubernetes..."
 bash "$SCRIPT_DIR/deploy.sh"

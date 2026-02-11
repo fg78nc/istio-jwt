@@ -1,4 +1,5 @@
-FROM nginx:1.25-alpine
+ARG DOCKER_REGISTRY=""
+FROM ${DOCKER_REGISTRY}nginx:1.25-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 

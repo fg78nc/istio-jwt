@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jre-jammy
+ARG DOCKER_REGISTRY=""
+FROM ${DOCKER_REGISTRY}eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
