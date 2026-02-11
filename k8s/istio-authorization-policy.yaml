@@ -1,0 +1,36 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: backend-policy
+  namespace: istio-jwt-demo
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+    # Allow public endpoint without any token
+    - to:
+        - operation:
+            paths: ["/api/public"]
+    # Allow actuator endpoints for health probes
+    - to:
+        - operation:
+            paths: ["/actuator/*"]
+    # Allow /api/secured for any authenticated user
+    - to:
+        - operation:
+            paths: ["/api/secured"]
+      from:
+        - source:
+            requestPrincipals: ["*"]
+    # Allow /api/admin only for users with role=admin
+    - to:
+        - operation:
+            paths: ["/api/admin"]
+      from:
+        - source:
+            requestPrincipals: ["*"]
+      when:
+        - key: request.auth.claims[role]
+          values: ["admin"]

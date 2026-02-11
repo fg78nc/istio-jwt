@@ -1,0 +1,16 @@
+apiVersion: security.istio.io/v1
+kind: RequestAuthentication
+metadata:
+  name: jwt-auth
+  namespace: istio-jwt-demo
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  jwtRules:
+    - issuer: "istio-jwt-demo"
+      audiences:
+        - "istio-jwt-audience"
+      jwksUri: "http://jwks-server.istio-jwt-demo.svc.cluster.local/jwks.json"
+      outputPayloadToHeader: "X-Jwt-Payload"
+      forwardOriginalToken: true

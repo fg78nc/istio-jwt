@@ -1,0 +1,29 @@
+### 1. Public endpoint - no token (expect 200)
+GET http://127.0.0.1/api/public
+
+### 2. Secured endpoint - no token (expect 403)
+GET http://127.0.0.1/api/secured
+
+### 3. Secured endpoint - valid user token (expect 200)
+GET http://127.0.0.1/api/secured
+Authorization: Bearer {{user_token}}
+
+### 4. Secured endpoint - expired token (expect 401)
+GET http://127.0.0.1/api/secured
+Authorization: Bearer {{expired_token}}
+
+### 5. Secured endpoint - wrong issuer (expect 401)
+GET http://127.0.0.1/api/secured
+Authorization: Bearer {{wrong_iss_token}}
+
+### 6. Secured endpoint - garbage token (expect 401)
+GET http://127.0.0.1/api/secured
+Authorization: Bearer garbage.token.here
+
+### 7. Admin endpoint - user role (expect 403)
+GET http://127.0.0.1/api/admin
+Authorization: Bearer {{user_token}}
+
+### 8. Admin endpoint - admin role (expect 200)
+GET http://127.0.0.1/api/admin
+Authorization: Bearer {{admin_token}}
